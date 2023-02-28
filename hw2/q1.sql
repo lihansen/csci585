@@ -1,29 +1,68 @@
--- SQLite
--- Entities are based on E-R gram in HW1
+-- MySQL 8.0.32
+
+drop table if exists sponsor_video_log;
+drop table if exists sponsor;
+drop table if exists video;
+
 
 CREATE TABLE sponsor (
+  sponsor_id INT AUTO_INCREMENT,
   name VARCHAR(255),
   phone VARCHAR(20),
   address VARCHAR(255),
-  amount_sponsored DECIMAL(10,2)
+  primary key (sponsor_id)
+);
+
+create table video (
+    video_url varchar(255),
+    title varchar(255),
+    thumbnail varchar(255),
+    primary key (video_url)
 );
 
 
-INSERT INTO sponsor (name, phone, address, amount_sponsored)
-VALUES
-  ('John Doe', '555-1234', '123 Main St, Anytown USA', 1000.00),
-  ('Jane Smith', '555-5678', '456 Oak St, Anytown USA', 2500.00),
-  ('Bob Johnson', '555-9012', '789 Elm St, Anytown USA', 500.00),
-  ('Alice Brown', '555-3456', '321 Pine St, Anytown USA', 750.00),
-  ('Charlie Lee', '555-7890', '654 Cedar St, Anytown USA', 2000.00);
-
-
-SELECT name, phone, amount_sponsored
-FROM sponsor
-WHERE amount_sponsored = (
-SELECT MAX(amount_sponsored)
-FROM sponsor
+create table sponsor_video_log(
+  video_url varchar(255),
+  sponsor_id integer,
+  amount DECIMAL (10, 2),
+  PRIMARY KEY (video_url, sponsor_id),
+  FOREIGN KEY (video_url) REFERENCES video(video_url) ,
+  FOREIGN KEY (sponsor_id) REFERENCES sponsor(sponsor_id)
 );
 
 
--- DROP TABLE sponsor;
+INSERT INTO sponsor (name, phone, address) VALUES
+('Sponsor 1', '123-456-7890', '123 Main St'),
+('Sponsor 2', '456-789-0123', '456 Second St'),
+('Sponsor 3', '789-012-3456', '789 Third St'),
+('Sponsor 4', '012-345-6789', '012 Fourth St'),
+('Sponsor 5', '345-678-9012', '345 Fifth St');
+
+INSERT INTO video (video_url, title, thumbnail) VALUES
+('https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'Never Gonna Give You Up', 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg'),
+('https://www.youtube.com/watch?v=Z1jK8rhOGkM', 'All Star', 'https://i.ytimg.com/vi/Z1jK8rhOGkM/hqdefault.jpg'),
+('https://www.youtube.com/watch?v=gjBRyRHZG8o', 'Take on Me', 'https://i.ytimg.com/vi/gjBRyRHZG8o/hqdefault.jpg'),
+('https://www.youtube.com/watch?v=J---aiyznGQ', 'Smooth Criminal', 'https://i.ytimg.com/vi/J---aiyznGQ/hqdefault.jpg'),
+('https://www.youtube.com/watch?v=fHiGbolOJfU', 'Sweet Child O Mine', 'https://i.ytimg.com/vi/fHiGbolOJfU/hqdefault.jpg');
+
+INSERT INTO sponsor_video_log (video_url, sponsor_id, amount) VALUES
+('https://www.youtube.com/watch?v=dQw4w9WgXcQ', 1, 100.00),
+('https://www.youtube.com/watch?v=Z1jK8rhOGkM', 2, 75.00),
+('https://www.youtube.com/watch?v=gjBRyRHZG8o', 1, 50.00),
+('https://www.youtube.com/watch?v=J---aiyznGQ', 3, 200.00),
+('https://www.youtube.com/watch?v=fHiGbolOJfU', 4, 150.00),
+('https://www.youtube.com/watch?v=dQw4w9WgXcQ', 5, 125.00),
+('https://www.youtube.com/watch?v=Z1jK8rhOGkM', 3, 100.00),
+('https://www.youtube.com/watch?v=gjBRyRHZG8o', 2, 75.00),
+('https://www.youtube.com/watch?v=J---aiyznGQ', 4, 50.00),
+('https://www.youtube.com/watch?v=fHiGbolOJfU', 1, 200.00);
+
+
+SELECT sponsor.name, sponsor.phone, sum(sponsor_video_log.amount) as amount_sponsored
+FROM sponsor_video_log
+join sponsor on sponsor.sponsor_id = sponsor_video_log.sponsor_id
+group by sponsor.name, sponsor.phone
+order by amount_sponsored desc
+LIMIT 1;
+
+
