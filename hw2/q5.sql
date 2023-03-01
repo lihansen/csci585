@@ -1,12 +1,12 @@
 -- MySQL 8.0.32
 
 
-drop table if exists comment cascade;
-drop table if exists upload_request cascade;
-drop table if exists channel cascade;
-drop table if exists viewer_log cascade;
-drop table if exists user cascade;
-drop table if exists video cascade;
+# drop table if exists comment cascade;
+# drop table if exists upload_request cascade;
+# drop table if exists channel cascade;
+# drop table if exists viewer_log cascade;
+# drop table if exists user cascade;
+# drop table if exists video cascade;
 
 
 -- creator or consumer are not required in this problem

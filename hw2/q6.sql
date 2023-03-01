@@ -4,19 +4,22 @@
 -- Q6. Find all the content creators living in the US who have consistently posted at
 -- least 1 video each week of the last month. Display their username, channel/s they own
 -- and their total subscriber count.
-drop table if exists subscribe cascade;
 
-drop table if exists upload_request cascade;
 
-drop table if exists channel cascade;
 
-drop table if exists video cascade;
-
-drop table if exists video_consumer cascade;
-
-drop table if exists video_creator cascade;
-
-drop table if exists user cascade;
+# drop table if exists subscribe cascade;
+#
+# drop table if exists upload_request cascade;
+#
+# drop table if exists channel cascade;
+#
+# drop table if exists video cascade;
+#
+# drop table if exists video_consumer cascade;
+#
+# drop table if exists video_creator cascade;
+#
+# drop table if exists user cascade;
 
 
 create table video (
@@ -224,62 +227,53 @@ VALUES
 
 # https://piazza.com/class/lcpi8pdga7s186/post/362
 # https://piazza.com/class/lcpi8pdga7s186/post/409
-
-
 # It is the channel name and consistent channel's sub count
+
+
+
 
 select u.name,
        c.channel_name,
-       c.channel_id,
+#        c.channel_id,
        count(*) as channel_subscriber
 from user u
 join video_creator vc on u.user_id = vc.user_id
 join channel c on u.user_id = c.owner_user_id
 join subscribe s on c.channel_id = s.channel_id
 where u.address like '%USA'
-and
-    (
-        select count(upload_request.channel_id) as times
-        from upload_request
-        where upload_request.channel_id = c.channel_id
-          and
-            upload_request.upload_date between '2023-01-02' and '2023-01-08'
-#           and
-#             upload_request.upload_date between '2023-01-09' and '2023-01-15'
-    )
-and
-    (
-        select count(upload_request.channel_id) as times
-        from upload_request
-        where upload_request.channel_id = c.channel_id
-#           and
-#             upload_request.upload_date between '2023-01-02' and '2023-01-08'
-          and
-            upload_request.upload_date between '2023-01-09' and '2023-01-15'
-    )
+    and
+        (
+            select count(upload_request.channel_id) as times
+            from upload_request
+            where upload_request.channel_id = c.channel_id
+              and
+                upload_request.upload_date between '2023-01-02' and '2023-01-08'
+        )
+    and
+        (
+            select count(upload_request.channel_id) as times
+            from upload_request
+            where upload_request.channel_id = c.channel_id
+              and
+                upload_request.upload_date between '2023-01-09' and '2023-01-15'
+        )
+    and
+        (
+            select count(upload_request.channel_id) as times
+            from upload_request
+            where upload_request.channel_id = c.channel_id
+              and
+                upload_request.upload_date between '2023-01-16' and '2023-01-22'
+        )
+    and
+        (
+            select count(upload_request.channel_id) as times
+            from upload_request
+            where upload_request.channel_id = c.channel_id
+              and
+                upload_request.upload_date between '2023-01-23' and '2023-01-29'
+        )
 
 group by c.channel_id
-
-
-
 ;
 
-#
-#     select count(upload_request.channel_id) as times
-#     from upload_request
-#     where channel_id = 1 and
-#         upload_date between '2023-01-02' and '2023-01-08';
-
-# SELECT COUNT(*) FROM viewer_log
-# WHERE view_time >= '2022-01-01 00:00:00' AND view_time < '2022-02-01 00:00:00';
-
-# SELECT u.name AS username, GROUP_CONCAT(c.channel_name) AS channels_owned, SUM(s.subscriber_count) AS total_subscribers
-# FROM user u
-# JOIN channel c ON u.user_id = c.owner_user_id
-# JOIN video v ON v.video_url = c.channel_name
-# JOIN viewer_log vl ON vl.video_url = v.video_url
-# JOIN subscriber s ON s.channel_name = c.channel_name
-# WHERE u.country = 'US'
-# AND vl.view_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
-# GROUP BY u.name
-# HAVING COUNT(DISTINCT WEEK(vl.view_time)) >= 4

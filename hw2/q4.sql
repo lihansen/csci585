@@ -5,13 +5,13 @@
 -- such that the highest score is displayed first.
 
 
-drop table if exists comment cascade;
-
-drop table if exists informational_video cascade;
-
-drop table if exists user cascade;
-
-drop table if exists video cascade;
+# drop table if exists comment cascade;
+#
+# drop table if exists informational_video cascade;
+#
+# drop table if exists user cascade;
+#
+# drop table if exists video cascade;
 
 
 

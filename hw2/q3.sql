@@ -2,15 +2,15 @@
 
 
 -- drop tables
-drop table if exists subscribe cascade;
-
-drop table if exists channel cascade;
-
-drop table if exists video_consumer cascade;
-
-drop table if exists video_creator cascade;
-
-drop table if exists user cascade;
+# drop table if exists subscribe cascade;
+#
+# drop table if exists channel cascade;
+#
+# drop table if exists video_consumer cascade;
+#
+# drop table if exists video_creator cascade;
+#
+# drop table if exists user cascade;
 
 
 

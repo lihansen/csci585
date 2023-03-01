@@ -6,15 +6,15 @@
 
 # assume there is no data in the database
 # drop tables if there exists the same name tables in the database
-drop table if exists statics;
-
-drop table if exists upload_request;
-
-drop table if exists channel;
-
-drop table if exists user;
-
-drop table if exists video;
+# drop table if exists statics;
+#
+# drop table if exists upload_request;
+#
+# drop table if exists channel;
+#
+# drop table if exists user;
+#
+# drop table if exists video;
 
 
 # create tables
