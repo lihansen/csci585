@@ -1,8 +1,10 @@
 -- MySQL 8.0.32
 
-drop table if exists sponsor_video_log;
-drop table if exists sponsor;
-drop table if exists video;
+
+# drop table if exists sponsor_video_log cascade;
+# drop table if exists sponsor cascade;
+# drop table if exists video cascade;
+
 
 
 CREATE TABLE sponsor (
@@ -47,7 +49,7 @@ INSERT INTO video (video_url, title, thumbnail) VALUES
 
 INSERT INTO sponsor_video_log (video_url, sponsor_id, amount) VALUES
 ('https://www.youtube.com/watch?v=dQw4w9WgXcQ', 1, 100.00),
-('https://www.youtube.com/watch?v=Z1jK8rhOGkM', 2, 75.00),
+('https://www.youtube.com/watch?v=Z1jK8rhOGkM', 2, 275.00),
 ('https://www.youtube.com/watch?v=gjBRyRHZG8o', 1, 50.00),
 ('https://www.youtube.com/watch?v=J---aiyznGQ', 3, 200.00),
 ('https://www.youtube.com/watch?v=fHiGbolOJfU', 4, 150.00),
@@ -58,11 +60,18 @@ INSERT INTO sponsor_video_log (video_url, sponsor_id, amount) VALUES
 ('https://www.youtube.com/watch?v=fHiGbolOJfU', 1, 200.00);
 
 
+-- https://piazza.com/class/lcpi8pdga7s186/post/295
 SELECT sponsor.name, sponsor.phone, sum(sponsor_video_log.amount) as amount_sponsored
 FROM sponsor_video_log
 join sponsor on sponsor.sponsor_id = sponsor_video_log.sponsor_id
 group by sponsor.name, sponsor.phone
-order by amount_sponsored desc
-LIMIT 1;
+having amount_sponsored = (
+    select max(total_amount.sum_amt)
+    from (
+        select sum(amount) as sum_amt
+        from sponsor_video_log
+        group by sponsor_id
+         ) as total_amount
+    );
 
 
