@@ -1,10 +1,10 @@
 -- MySQL 8.0.32
 
 
+-- drop tables for debugging or testing
 # drop table if exists sponsor_video_log cascade;
 # drop table if exists sponsor cascade;
 # drop table if exists video cascade;
-
 
 
 CREATE TABLE sponsor (
@@ -61,11 +61,17 @@ INSERT INTO sponsor_video_log (video_url, sponsor_id, amount) VALUES
 
 
 -- https://piazza.com/class/lcpi8pdga7s186/post/295
+
+# Q1. Find the sponsor who has sponsored the highest amount in YouTube.
+# Display the sponsor’s name, phone number and the total amount sponsored.
+
+
+-- amount_sponsored is for calculating the total amount sponsored
 SELECT sponsor.name, sponsor.phone, sum(sponsor_video_log.amount) as amount_sponsored
 FROM sponsor_video_log
 join sponsor on sponsor.sponsor_id = sponsor_video_log.sponsor_id
 group by sponsor.name, sponsor.phone
-having amount_sponsored = (
+having amount_sponsored = ( -- calculating the max amount, and it maybe more than one max results
     select max(total_amount.sum_amt)
     from (
         select sum(amount) as sum_amt

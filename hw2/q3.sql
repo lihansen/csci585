@@ -1,7 +1,7 @@
 -- MySQL 8.0.32
 
 
--- drop tables
+-- drop tables for debugging or testing
 # drop table if exists subscribe cascade;
 #
 # drop table if exists channel cascade;
@@ -331,16 +331,19 @@ select 7, user_id, 'free'
 from video_consumer
 where user_id <= 40;
 
-
+# Q3. Find unique user/s with the total number of paid subscribers
+# greater than 100 for their channel/s created on 01.01.2023.
+# Display the username, email, channel name and the subscriber count.
 
 select user.name, user.email, c.channel_name, vc.subscriber_count
 from user
 join video_creator vc on user.user_id = vc.user_id
 join channel c on vc.user_id = c.owner_user_id
 join subscribe s on c.channel_id = s.channel_id
-where s.subscription_type = 'paid' and c.creation_date='2023-01-01'
+where s.subscription_type = 'paid' -- paid subscribers
+  and c.creation_date='2023-01-01' -- created on 2023 01 01
 group by c.channel_id
-having count(*) > 100;
+having count(*) > 100; -- subscribers greater than 100
 
 
 

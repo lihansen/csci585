@@ -1,5 +1,6 @@
 -- MySQL 8.0.32
 
+-- drop tables for debugging or testing
 
 # drop table if exists comment cascade;
 # drop table if exists upload_request cascade;
@@ -161,15 +162,15 @@ select v.title,
        MAX(viewer.age) as max_age
 from video v
 join viewer_log vl on v.video_url = vl.video_url
-join user viewer on viewer.user_id = vl.viewer_id
-where v.video_url in (
+join user viewer on viewer.user_id = vl.viewer_id -- find all viewers and their ages
+where v.video_url in ( -- find the most commented on videos
         select v2.video_url
         from user owner
         join channel c2 on owner.user_id = c2.owner_user_id
         join upload_request r on c2.channel_id = r.channel_id
         join video v2 on r.video_url = v2.video_url
         join comment ct on ct.video_url = v2.video_url
-        where owner.name = 'Taylor Swift'
+        where owner.name = 'Taylor Swift' -- taylor swift's channel
         group by v2.video_url
         having count(ct.comment_id) = (
             select max(total_cmt.cmt_sum)
@@ -180,7 +181,7 @@ where v.video_url in (
                  )as total_cmt
             )
     )
-group by v.video_url
+group by v.video_url -- group by video, url is the pk
 ;
 
 

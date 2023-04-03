@@ -4,7 +4,7 @@
 -- Display the keyword name along with average score
 -- such that the highest score is displayed first.
 
-
+-- drop tables for debugging or testing
 # drop table if exists comment cascade;
 #
 # drop table if exists informational_video cascade;
@@ -46,7 +46,6 @@ create table informational_video(
     video_url varchar(255),
     keyword varchar(255),
 
-#     primary key (video_url),
     foreign key (video_url) references video(video_url)
 );
 
@@ -93,9 +92,9 @@ values
   ('https://www.youtube.com/watch?v=abc123', 3, 'so cute', 8),
   ('https://www.youtube.com/watch?v=def456', 2, 'excellent', 9),
   ('https://www.youtube.com/watch?v=ghi789', 3, 'very good', 6),
-  ('https://www.youtube.com/watch?v=jkl012', 2, 'bad', 4),
-  ('https://www.youtube.com/watch?v=mno345', 3, 'not bad',7),
-  ('https://www.youtube.com/watch?v=pqr678', 1, 'awesome', 9),
+#   ('https://www.youtube.com/watch?v=jkl012', 2, 'bad', 4),
+#   ('https://www.youtube.com/watch?v=mno345', 3, 'not bad',7),
+#   ('https://www.youtube.com/watch?v=pqr678', 1, 'awesome', 9),
   ('https://www.youtube.com/watch?v=stu901', 2, 'perfect', 10),
   ('https://www.youtube.com/watch?v=vwx345', 1, 'nice', 8),
   ('https://www.youtube.com/watch?v=klm678', 3, 'looks good', 7),
@@ -130,12 +129,18 @@ values
   ('https://www.youtube.com/watch?v=klm789', 'Cook'),
   ('https://www.youtube.com/watch?v=def012', 'Cook');
 
+-- Q4. Find the average sentiment score for each keyword category.
+-- Display the keyword name along with average score
+-- such that the highest score is displayed first.
 
+# https://piazza.com/class/lcpi8pdga7s186/post/495
 
-select keyword, avg(c.sentiment) as average_score
+select keyword,
+       -- if there is no comment on this keyword of videos, the score will be zero
+       IF(avg(c.sentiment) is NULL, 0, avg(c.sentiment)) AS average_score -- calculate avg sentiment score
 from informational_video iv
-join comment c on iv.video_url = c.video_url
+left join comment c on iv.video_url = c.video_url -- left join for keywords, comment may not exist
 group by keyword
-order by average_score desc;
+order by average_score desc; -- highest score display first, desc order
 
 

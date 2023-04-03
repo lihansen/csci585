@@ -4,7 +4,7 @@
 -- the word “Marvel Entertainment” in them. Display the Video Title,
 -- channel name and the ratio in the ascending order of the title.
 
-# assume there is no data in the database
+-- drop tables for debugging or testing
 # drop tables if there exists the same name tables in the database
 # drop table if exists statics;
 #
@@ -113,17 +113,19 @@ INSERT INTO upload_request (uploader_id, channel_name, video_url, upload_date, u
 (5, 'Music','https://www.youtube.com/watch?v=j5a0jTc9S10', '2020-01-01', '2020-01-01 12:00:00'),
 (5, 'Rock Music','https://www.youtube.com/watch?v=U06jlgpMtQs', '2020-01-01', '2020-01-01 12:00:00');
 
-
+# Q2. Find the ratio of likes to views of each video belonging to any of the channels owned by users
+# having the word “Marvel Entertainment” in them. Display the Video Title,
+# channel name and the ratio in the ascending order of the title.
 
 SELECT v.title as video_title,
        ur.channel_name,
-       s.likes/s.views as ratio
+       s.likes/s.views as ratio -- calculate ratio
 FROM statics s
 JOIN video v ON s.video_url = v.video_url
 JOIN upload_request ur ON ur.video_url = v.video_url
 JOIN user u ON ur.uploader_id = u.user_id
 WHERE u.name LIKE '%Marvel Entertainment%'
-ORDER BY v.title ASC;
+ORDER BY v.title ASC; -- ascending order
 
 
 

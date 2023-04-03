@@ -6,6 +6,7 @@
 -- and their total subscriber count.
 
 
+-- drop tables for debugging or testing
 
 # drop table if exists subscribe cascade;
 #
@@ -96,10 +97,10 @@ create table subscribe(
 
 INSERT INTO user (name, email, address)
 VALUES
-('John Smith', 'john.smith@gmail.com', '123 Main St, USA'),
-('Jane Doe', 'jane.doe@gmail.com', '456 Oak St, USA'),
-('David Lee', 'david.lee@gmail.com', '789 Elm St, USA'),
-('Sarah Johnson', 'sarah.johnson@gmail.com', '1010 Pine St, USA'),
+('John Smith', 'john.smith@gmail.com', '123 Main St, US'),
+('Jane Doe', 'jane.doe@gmail.com', '456 Oak St, US'),
+('David Lee', 'david.lee@gmail.com', '789 Elm St, US'),
+('Sarah Johnson', 'sarah.johnson@gmail.com', '1010 Pine St, US'),
 ('Michael Brown', 'michael.brown@gmail.com', '1111 Cedar St, UK'),
 ('Emily Wilson', 'emily.wilson@gmail.com', '1212 Maple St, Canada'),
 ('Oliver Thompson', 'oliver.thompson@gmail.com', '1313 Spruce St, Canada'),
@@ -160,7 +161,7 @@ VALUES
 ('Food', 4, '2022-01-01'),
 ('Sport ', 5, '2022-01-01');
 
-
+-- Insert subscribe log
 insert into subscribe (channel_id, subscriber_id)
 values
 (1,10),
@@ -188,11 +189,7 @@ values
 
 
 -- insert upload requests
--- assume last month is from 2023-01-01 to 2023-01-31
--- week 1: 2023-01-02 ~ 2023-01-08
--- week 2: 2023-01-09 ~ 2023-01-15
--- week 3: 2023-01-16 ~ 2023-01-22
--- week 4: 2023-01-23 ~ 2023-01-29
+
 INSERT INTO upload_request (uploader_id, channel_id, video_url, upload_date)
 VALUES
 (1,1, 'https://www.youtube.com/watch?v=abcdefghijk', '2023-01-03'),
@@ -229,7 +226,11 @@ VALUES
 # https://piazza.com/class/lcpi8pdga7s186/post/409
 # It is the channel name and consistent channel's sub count
 
-
+-- assume last month is from 2023-01-01 to 2023-01-31
+-- week 1: 2023-01-02 ~ 2023-01-08
+-- week 2: 2023-01-09 ~ 2023-01-15
+-- week 3: 2023-01-16 ~ 2023-01-22
+-- week 4: 2023-01-23 ~ 2023-01-29
 
 
 select u.name,
@@ -240,9 +241,9 @@ from user u
 join video_creator vc on u.user_id = vc.user_id
 join channel c on u.user_id = c.owner_user_id
 join subscribe s on c.channel_id = s.channel_id
-where u.address like '%USA'
+where u.address like '%US' -- address format is as insert above, ending with country
     and
-        (
+        ( -- query for checking whether channel uploaded in week 1
             select count(upload_request.channel_id) as times
             from upload_request
             where upload_request.channel_id = c.channel_id
@@ -250,7 +251,7 @@ where u.address like '%USA'
                 upload_request.upload_date between '2023-01-02' and '2023-01-08'
         )
     and
-        (
+        (-- query for checking whether channel uploaded in week 2
             select count(upload_request.channel_id) as times
             from upload_request
             where upload_request.channel_id = c.channel_id
@@ -258,7 +259,7 @@ where u.address like '%USA'
                 upload_request.upload_date between '2023-01-09' and '2023-01-15'
         )
     and
-        (
+        (-- query for checking whether channel uploaded in week 3
             select count(upload_request.channel_id) as times
             from upload_request
             where upload_request.channel_id = c.channel_id
@@ -266,7 +267,7 @@ where u.address like '%USA'
                 upload_request.upload_date between '2023-01-16' and '2023-01-22'
         )
     and
-        (
+        (-- query for checking whether channel uploaded in week 4
             select count(upload_request.channel_id) as times
             from upload_request
             where upload_request.channel_id = c.channel_id
