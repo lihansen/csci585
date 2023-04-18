@@ -1,0 +1,46 @@
+create extension POSTGIS;
+
+CREATE TABLE geometries (
+  name varchar,
+  geom geometry
+);
+
+INSERT INTO geometries VALUES
+  ('Home', 'POINT(-118.28917519590489 34.065875257511)'),
+  ('SCA', 'POINT(-118.2863307695277 34.02363796963184)'),
+  ('ASC', 'POINT(-118.28619245720276 34.02168816909867)'),
+  ('VHE', 'POINT(-118.2880697586744 34.0200898563807)'),
+  ('WAH', 'POINT(-118.28756223443736 34.019132559219486)'),
+  ('HAR', 'POINT(-118.28711682010284 34.01911990254569)'),
+  ('HOH', 'POINT(-118.28548159461309 34.0187623305564)'),
+  ('LAW', 'POINT(-118.28444940155117 34.018998257958394)'),
+  ('RGL', 'POINT(-118.28357307340833 34.01951719188072)'),
+  ('DEN', 'POINT(-118.28576976444413 34.02359215080181)'),
+  ('MCC', 'POINT(-118.28738103418613 34.024621091868234)'),
+  ('KAP', 'POINT(-118.29054761688998 34.022555016012966)'),
+  ('GER', 'POINT(-118.29057657302621 34.02014078369238)');
+
+
+
+SELECT ST_AsText(ST_ConvexHull(ST_Collect(geom))) as convex_hull
+FROM geometries;
+
+
+
+
+SELECT name, ST_AsText(geom) AS coordinates
+FROM geometries
+CROSS JOIN (SELECT geom AS home_geom FROM geometries WHERE name = 'Home') AS home
+WHERE name != 'Home'
+ORDER BY ST_Distance(geom, home_geom)
+LIMIT 4;
+
+
+WITH home AS (
+  SELECT geom FROM geometries WHERE name = 'Home'
+)
+SELECT g.name, ST_AsText(g.geom), ST_Distance(g.geom, h.geom) as distance
+FROM geometries g, home h
+WHERE g.name != 'Home'
+ORDER BY distance ASC
+LIMIT 4;

@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<title>OL</title>
+<script src="https://openlayers.org/api/OpenLayers.js">
+</script>
+<style>
+#map {
+    width:400px;
+    height:400px;
+}
+</style>
+</head>
+
+<body>
+<div id="map"></div>
+
+
+<script>
+function initMap() {
+        map = new OpenLayers.Map('map');
+        basemap = new OpenLayers.Layer.OSM("Simple OSM Map");
+        map.addLayer(basemap);
+        markers = new OpenLayers.Layer.Markers("Markers");
+        map.addLayer(markers);
+}// initMap()
+
+function addMarker(latitude, longitude) {
+        var lonLat = new OpenLayers.LonLat(longitude, latitude)
+            .transform(
+                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                map.getProjectionObject() // to Spherical Mercator Projection
+        );
+        var point = new OpenLayers.Marker(lonLat);
+        markers.addMarker(point);
+        map.setCenter(lonLat,18); // second arg is zoom level
+        //console.log(latitude + ", " + longitude);
+}// addMarker()
+
+
+// load and setup map layers
+initMap();
+
+
+
+const defaultPoints = [
+    { name: 'Home', coordinates: [-118.28917519590489, 34.065875257511] },
+  { name: 'SCA', coordinates: [-118.2863307695277, 34.02363796963184] },
+  { name: 'ASC', coordinates: [-118.28619245720276, 34.02168816909867] },
+  { name: 'VHE', coordinates: [-118.2880697586744, 34.0200898563807] },
+  { name: 'WAH', coordinates: [-118.28756223443736, 34.019132559219486] },
+  { name: 'HAR', coordinates: [-118.28711682010284, 34.01911990254569] },
+  { name: 'HOH', coordinates: [-118.28548159461309, 34.0187623305564] },
+  { name: 'LAW', coordinates: [-118.28444940155117, 34.018998257958394] },
+  { name: 'RGL', coordinates: [-118.28357307340833, 34.01951719188072] },
+  { name: 'DEN', coordinates: [-118.28576976444413, 34.02359215080181] },
+  { name: 'MCC', coordinates: [-118.28738103418613, 34.024621091868234] },
+  { name: 'KAP', coordinates: [-118.29054761688998, 34.022555016012966] },
+  { name: 'GER', coordinates: [-118.29057657302621, 34.02014078369238] },
+];
+
+// Retrieve points from localStorage or use default points
+let storedPoints = JSON.parse(localStorage.getItem('points')) || defaultPoints;
+
+// Store default points in localStorage if not already present
+if (!localStorage.getItem('points')) {
+  localStorage.setItem('points', JSON.stringify(defaultPoints));
+  console.log("storage not found");
+}else{
+    console.log("storage found");
+}
+
+console.log(storedPoints);
+
+storedPoints.forEach(point => {
+  const [longitude, latitude] = point.coordinates;
+  addMarker(latitude, longitude);
+});
+
+
+</script>
+
+</body>
+
+</html>
