@@ -1,0 +1,41 @@
+[
+  {
+    "$minLongitude": -118.29058
+  },
+  {
+    "$minLatitude": 34.2013
+  },
+  {
+    "$maxLongitude": -118.028
+  },
+  {
+    "$maxLatitude": 34.025
+  },
+  {
+    "loc": {
+      "$geoWithin": {
+        "$box": [
+          [
+            "$minLongitude",
+            "$minLatitude"
+          ],
+          [
+            "$maxLongitude",
+            "$maxLatitude"
+          ]
+        ]
+      }
+    }
+  }
+
+]
+
+
+{
+  $and: [
+    { "loc.0": { $gte: -118.29058 } },
+    { "loc.0": { $lte: -118.028 } },
+    { "loc.1": { $lt: 34.025 } },
+    { "loc.1": { $gt: 34.02013 } }
+  ]
+}
